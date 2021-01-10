@@ -1,28 +1,4 @@
-/**
- * The `::ng-deep` is deprecated without 
- * alternative, here is an alternative.
- * This plugin removes `[deep]` in a selector
- * and removea all subsequent `[_ngcontent-*]`
- * occurrences.
- * @see https://angular.io/guide/component-styles#deprecated-deep--and-ng-deep
- */
-
-module.exports = function () {
-  return {
-    postcssPlugin: 'postcss-deep',
-    Rule(rule) {
-      rule.selector = rule.selectors
-        .map(selector =>
-          hasDeep(selector)
-            ?getChangedDeepSelector(selector)
-            :selector
-        )
-        .join(', ')
-    },
-  }
-}
-
-module.exports.postcss = true
+const postcss = require('postcss');
 
 /**
  * Check if selector contains `[deep]`
@@ -30,7 +6,7 @@ module.exports.postcss = true
  * @return {Boolean}
  */
 function hasDeep(selector) {
-  return /\[deep\]/.test(selector)
+  return /\[deep\]/.test(selector) || /::ng-deep/.test(selector)
 }
 
 /**
@@ -39,7 +15,61 @@ function hasDeep(selector) {
  * @return {String}
  */
 function getChangedDeepSelector(selector) {
-  const [start, deep] = cssText.split(/\[deep\]/)
-  return start + deep.replace(/\[_ngcontent-[^\s]+\]/g,'')
+  const [start, deep] = selector.split(/\[deep\]|::ng-deep/)
+  return (start + deep.replace(/\[_ngcontent-[^\s]+\]/g,'')).replace(/\s+/g, ' ')
 }
 
+/**
+ * The `::ng-deep` is deprecated without alternative.
+ * This plugin removes `[deep]` as well as `::ng-deep` in a selector and
+ * removes all subsequent `[_ngcontent-*]` occurrences.
+ * @see https://angular.io/guide/component-styles#deprecated-deep--and-ng-deep
+ */
+module.exports = postcss.plugin('postcss-deep', () => css => css.walkRules(rule=>{
+  if (rule.selectors) {
+    rule.selectors = rule.selectors.map(selector =>
+      hasDeep(selector)
+        ?getChangedDeepSelector(selector)
+        :selector
+    )
+  }
+}))
+
+// var postcss = require('postcss');
+//
+// /**
+//  * Check if specified selector is a :host
+//  * @param  {String} selector
+//  * @return {Boolean}
+//  */
+// function isHostSelector(selector) {
+//   return /\:host:/.test(selector);
+// }
+//
+// /**
+//  * Returns :host(:pseudo-selector) from a wrong :host:pseudo-selector
+//  * @param  {String} selector
+//  * @return {String}
+//  */
+// function getChangedHostSelector(selector) {
+//   return selector.replace(/:host:(.+)/, ':host(:$1)');
+// }
+//
+// /**
+//  * PostCSS rule optimiser
+//  * @param {Rule} rule
+//  */
+// function optimise(rule) {
+//   if (rule.selectors) {
+//     rule.selectors = rule.selectors.map(selector => {
+//       if (hasDeep(selector)) {
+//         return getChangedDeepSelector(selector);
+//       }
+//       return selector;
+//     });
+//   }
+// }
+//
+// module.exports = postcss.plugin('postcss-minify-selectors', () => {
+//   return css => css.walkRules(optimise);
+// });

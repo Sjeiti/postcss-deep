@@ -1,0 +1,27 @@
+{
+  "name": "@sjeiti/postcss-deep",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Ron Valstar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sjeiti/postcss-deep.git"
+  },
+  "keywords": [
+    "postcss",
+    "angular"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test/index.js"
+  },
+  "devDependencies": {
+    "expect": "^23.2.0",
+    "mocha": "^5.2.0",
+    "postcss": "^6.0.23"
+  },
+  "dependencies": {}
+}

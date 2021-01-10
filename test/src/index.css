@@ -1,0 +1,11 @@
+.foo[_ngcontent-vcl-c107] [deep] .bar[_ngcontent-vcl-c107] {
+	color: red;
+}
+
+[_ngcontent-vcl-c107] ::ng-deep h3[_ngcontent-vcl-c107] {
+	color: white;
+}
+
+::ng-deep h3[_ngcontent-vcl-c107] {
+	color: blue;
+}

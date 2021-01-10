@@ -1,0 +1,11 @@
+.foo[_ngcontent-vcl-c107] .bar {
+	color: red;
+}
+
+[_ngcontent-vcl-c107] h3 {
+	color: white;
+}
+
+ h3 {
+	color: blue;
+}
